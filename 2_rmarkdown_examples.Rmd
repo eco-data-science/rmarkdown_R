@@ -7,6 +7,9 @@ output:
     toc: true
     theme: spacelab
     highlight: haddock
+  pdf_document:
+    toc: true
+    highlight: haddock
 ---
 
 ``` {r setup, echo = FALSE, eval = TRUE, message = FALSE, warning = FALSE}
