@@ -44,7 +44,7 @@ git_prov <- function(git_file, prov_type = 'input') {
   prov_track <<- prov_track %>%
     rbind(git_df)
 
-  return(msg_git)
+  return(invisible(msg_git))
 }
 
 script_prov <- function(script_file_name) {
