@@ -3,12 +3,12 @@ title: "R Markdown workshop"
 author: "JA, CCO"
 date: "October 12, 2015"
 output:
-  pdf_document:
-    highlight: haddock
-    toc: yes
   html_document:
     highlight: haddock
     theme: spacelab
+    toc: yes
+  pdf_document:
+    highlight: haddock
     toc: yes
 ---
 
@@ -39,7 +39,7 @@ What are the differences between this and a standard new R script?
 
 * the file extension
 * the header
-* white spaces (where text will be formatted using Markdown codes) and grey spaces (where functional R code lives)
+* white spaces (Markdown sections, where text will be formatted using Markdown language) and grey spaces (R code chunks, where functional R code lives)
 
 With your new file, hit the 'Knit HTML' button at the top of the script pane in RStudio.  You will need to save the file before it will knit.
 
@@ -88,8 +88,14 @@ Use R Markdown to document your results such as for publication.  The code itsel
 * headers - six levels, from # (HUGE) to ###### (small)
 * `inline monospaced text` and `r x = ('inline executable R code'); x`
 * code blocks, non-executing (just for display) and executing (R code chunks)
+* text as ^superscripts^ and as ~subscripts~
 
 [Print out this awesome reference sheet](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf) or [this awesome cheat sheet](https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf) and nail it to your monitor.
+
+**NOTE:** Since Markdown basically converts your formatting to HTML, you can also just include straight HTML tags to do the same thing:
+
+* e.g. `<b>bold</b>` or `<i>italic</i>` becomes <b>bold</b> or <i>italic</i>
+* Use `<!-- this is a comment -->` to create comments directly in Markdown sections of your document
 
 ### Note on spaces and line breaks
 
@@ -216,9 +222,27 @@ awesome_plot <- ggplot(data = sq_num, aes(x = num, y = num_sq, color = let)) +
         legend.position = 'right') +
   geom_point(size = 3) + 
   labs(title = 'Squared numbers', x = 'number', y = 'number^2')
-  
+
+### For knitting to .pdf, comment out the print(awesome_plot); also uncomment 
+### the ![awesome_plot](...) in the Markdown below.
+ggsave(plot = awesome_plot, filename = 'img/awesome_plot.png')
+
 print(awesome_plot)
+
 ```
+
+<!-- ![awesome plot](img/awesome_plot.png) -->
+
+
+#### Knitting to PDF
+
+Knitting to HTML is pretty straightforward.  Markdown was designed specifically to render to HTML, but PDFs are more finicky and more frustrating.
+
+* You need specific software that `knitr` uses to create the .pdf.  See Appendix 2 below, with links.
+* Some R functionality that works great for html knitting causes errors when trying to knit a .pdf.  Specifically: ggplot is a troublemaker.  Sometimes it renders, sometimes not...
+    * One workaround could be: use `ggsave()` to save the ggplot as a .png (or whatever format you like)
+    * Then, instead of including a `print(plot_name)` (which tends to cause the error), insert the .png as an image using the `![image caption text](image file location or URL)` syntax in a Markdown section of your document.
+* Other R functionality might cause problems too.  When in doubt, comment it out, or put an `eval = FALSE` in the code chunk header to prevent the chunk from running (and causing an error).
 
 ## Advanced topics
 
@@ -251,6 +275,8 @@ For other options for formatted tables, see `pander` or `xtable` packages.  More
 
 The `DT` package offers a function `datatable()` (not to be confused with the `data.table` package and function...) that makes for easy creation of interactive tables in R Markdown.  It essentially embeds JavaScript code in the output HTML that adds the interactivity.  Sorting by column is standard; this example adds a filter option too.
 
+Note: These won't work when knitting a pdf file... try setting `eval = FALSE` in the code chunk header to prevent `knitr` from trying to render the interactive table and causing an error.
+
 ``` {r interactive table, eval = TRUE, echo = TRUE, results = 'asis'}
 # install.packages('DT')
 library(DT)
@@ -258,10 +284,10 @@ library(DT)
 nums <- c(1:100) + 0.25
 sq_num2 <- data.frame('num' = nums, 'num_sq' = nums^2, 'let' = rep(letters[1:3], len = length(nums)))
 
-datatable(sq_num2, 
-          caption = 'Squared numbers, interactive',
-          rownames = FALSE,
-          filter = 'bottom')
+DT::datatable(sq_num2, 
+              caption = 'Squared numbers, interactive',
+              rownames = FALSE,
+              filter = 'bottom')
 
 ```
 
