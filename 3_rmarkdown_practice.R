@@ -13,6 +13,15 @@
 ### Include a link to this website: (http://news.bbc.co.uk/2/hi/business/4510792.stm)
 ### Include this map: (http://newsimg.bbc.co.uk/media/images/41104000/gif/_41104266_nafta_416map.gif)
 
+### ? To test your progress so far, you'd like to be able to "knit" your Rmd.
+###   But the rest of the code hasn't been updated yet!  To prevent the rest 
+###   of this script from trying to knit: turn it into a non-executing, 
+###   non-printing code chunk like so: 
+###      ``` {r echo = FALSE, eval = FALSE}
+###   This should grey out everything else below this call.  As you progress,
+###   just move that line below the part you actually want to test.
+###   Note: you don't need to put a final ``` at the end.
+
 ##############################################################################.
 ### ? turn these pieces (divided by the horizontal bar) into separate R code 
 ###   chunks.  For Setup, use echo = FALSE to hide the code; try setting
@@ -43,7 +52,7 @@ source('R/RMarkdown_fxn.R')
 ### Read and tidy raw data set
 
 ### Read in dataset for quantity (tonnes) of harvest. 
-harvest_filename <- file.path(dir_data, 'FAO_raw_commodities_quant_1950_2011.csv')
+harvest_filename <- file.path(dir_data, 'FAO_americas_raw_commodities_quant_1950_2011.csv')
 
 message(sprintf('\nReading FAO Commodity file: %s', basename(harvest_filename)))
 harvest_raw <- read.csv(harvest_filename, check.names = FALSE, strip.white = TRUE, stringsAsFactors = FALSE)
@@ -69,7 +78,8 @@ harvest_data <- harvest_data %>%
 ###   separate regions.
 
 ### Clean up the FAO-specific codes into values useful for OHI
-harvest_data <- harvest_data %>% fao_clean_data()
+harvest_data <- harvest_data %>% 
+  fao_clean_data()
 
 harvest_data <- harvest_data %>%
   select(-trade) %>% 
@@ -81,7 +91,8 @@ comm_to_prod <- read.csv(file.path(dir_git, 'data/commodities2products.csv'), na
 harvest_data <-harvest_data %>% 
   inner_join(comm_to_prod, by = 'commodity')
 
-harvest_data <- harvest_data %>% np_fix_antilles()
+harvest_data <- harvest_data %>% 
+  np_fix_antilles()
 
 ##############################################################################.
 ### Prepare data frame to be saved as .csv:
